@@ -1,0 +1,20 @@
+{% extends 'partials/base.html' %}
+{% block title %}New Post{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <div class="row mt-5 pt-3 justify-content-center">
+        <div class="col-md-8">
+<div class="card my-3 shadow" >
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class="btn btn-primary btn-block" type="submit" value="Post">
+        </form>
+    </div>
+</div>
+    </div>
+    </div>
+</div>
+{% endblock %}
