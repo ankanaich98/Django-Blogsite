@@ -7,35 +7,36 @@ from django.contrib.auth.decorators import login_required
 # Creating a new post is here
 
 
-@login_required
-def index(request):
-    posts = PostModel.objects.all()
-
-    context = {
-        'posts': posts,
-    }
-
-    return render(request, 'blog/index.html', context)
-
-
 # @login_required
 # def index(request):
 #     posts = PostModel.objects.all()
-#     if request.method == 'POST':
-#         form = PostModelForm(request.POST)
-#         if form.is_valid():
-#             instance = form.save(commit=False)
-#             instance.author = request.user
-#             instance.save()
-#             return redirect('blog-index')
-#     else:
-#         form = PostModelForm
-#     form = PostModelForm()
+
 #     context = {
-#         'posts':posts,
-#         'form':form
+#         'posts': posts,
 #     }
-#     return render(request, 'blog/index.html',context)
+
+#     return render(request, 'blog/index.html', context)
+
+
+
+@login_required
+def index(request):
+    posts = PostModel.objects.all()
+    if request.method == 'POST':
+        form = PostModelForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.author = request.user
+            instance.save()
+            return redirect('blog-index')
+    else:
+        form = PostModelForm
+    form = PostModelForm()
+    context = {
+        'posts':posts,
+        'form':form
+    }
+    return render(request, 'blog/index.html',context)
 
 @login_required
 def newPost(request):
