@@ -13,6 +13,11 @@ class PostUpdateForm(forms.ModelForm):
         model = PostModel
         fields = ('title','content','image')
 
+class PostApproveForm(forms.ModelForm):
+     class Meta:
+        model = PostModel
+        fields = ('is_approved',)
+
 class CommentForm(forms.ModelForm):
     content = forms.CharField(label='',widget=forms.TextInput(attrs={'placeholder': 'Add comment here...'}))
     class Meta:

@@ -1,42 +1,52 @@
 from django.shortcuts import render,redirect
 from .models import PostModel
-from .forms import PostModelForm,PostUpdateForm,CommentForm
+from .forms import PostModelForm,PostUpdateForm,CommentForm,PostApproveForm
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 # Creating a new post is here
 
 
-# @login_required
-# def index(request):
-#     posts = PostModel.objects.all()
+@login_required
+def index(request):
+    # posts = PostModel.objects.all()
+    posts = PostModel.objects.filter(is_approved=True)
 
-#     context = {
-#         'posts': posts,
-#     }
+    context = {
+        'posts': posts,
+    }
 
-#     return render(request, 'blog/index.html', context)
-
+    return render(request, 'blog/index.html', context)
 
 
 @login_required
-def index(request):
+def approvePost(request):
     posts = PostModel.objects.all()
-    if request.method == 'POST':
-        form = PostModelForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.author = request.user
-            instance.save()
-            return redirect('blog-index')
-    else:
-        form = PostModelForm
-    form = PostModelForm()
+
     context = {
-        'posts':posts,
-        'form':form
+        'posts': posts,
     }
-    return render(request, 'blog/index.html',context)
+
+    return render(request, 'blog/approve_post.html', context)
+
+# @login_required
+# def index(request):
+#     posts = PostModel.objects.all()
+#     if request.method == 'POST':
+#         form = PostModelForm(request.POST)
+#         if form.is_valid():
+#             instance = form.save(commit=False)
+#             instance.author = request.user
+#             instance.save()
+#             return redirect('blog-index')
+#     else:
+#         form = PostModelForm
+#     form = PostModelForm()
+#     context = {
+#         'posts':posts,
+#         'form':form
+#     }
+#     return render(request, 'blog/index.html',context)
 
 @login_required
 def newPost(request):
@@ -55,6 +65,37 @@ def newPost(request):
 
     return render(request, 'blog/new_post.html', context)
 
+
+
+
+@login_required
+def approve_post_detail(request,pk):
+    post = PostModel.objects.get(id=pk)
+    if request.method == 'POST':
+        form = PostApproveForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('approve-post')
+    else:
+        form = PostApproveForm(instance=post)
+    context = {
+        'post':post,
+        'form':form,
+    }
+    return render(request, 'blog/approve_post_details.html',context)
+    
+    # if request.method == 'POST':
+    #     pa_form = PostApproveForm(request.POST, instance=post)
+    #     if form.is_valid():
+    #         form.save()
+    #         return redirect('approve-post-detail', pk = post.id)
+    # else:
+    #     form = PostApproveForm(instance=post)
+    # context = {
+    #     'post':post,
+    #     'form':form,
+    # }
+    # return render(request, 'blog/approve_post.html',context)
 
 
 
