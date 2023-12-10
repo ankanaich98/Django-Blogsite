@@ -50,6 +50,7 @@ def user_detail(request, pk):
         u_form = UserRoleForm(request.POST)
         if u_form.is_valid():
             user.role = u_form.cleaned_data['user_role']
+            messages.success(request,'User role updated.')
             user.save()
             return redirect('user-detail', pk=user.id)
     else:
@@ -86,9 +87,10 @@ def manage_users(request):
             # Process the form data and update user roles
             for user in users:
                 user.role = form.cleaned_data['user_role']
+                messages.success(request,'User role updated.')
                 user.save()
             # Redirect to the same page or another page as needed
-            return redirect('manage-users')
+                return redirect('manage-users')
     else:
         # Initialize the form with the current user roles
         form = UserRoleForm()

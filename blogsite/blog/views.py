@@ -89,6 +89,7 @@ def approve_post_detail(request,pk):
     if request.method == 'POST':
         form = PostApproveForm(request.POST, instance=post)
         if form.is_valid():
+            messages.success(request,'Post status has been updated.')
             form.save()
             return redirect('approve-post')
     else:
@@ -157,8 +158,9 @@ def post_edit(request,pk):
 def post_delete(request,pk):
     post = PostModel.objects.get(id=pk)
     if request.method == 'POST':
+        messages.success(request,'Post deleted successfully.')
         post.delete()
-        return redirect('blog-index')
+        return redirect('my-posts')
     context = {
         'post': post,
     }
