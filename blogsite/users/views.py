@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth.decorators import login_required
 from .models import ProfileModel
-from .forms import SignUpForm,UserUpdateForm,ProfileUpdateForm
+from .forms import SignUpForm,UserUpdateForm,ProfileUpdateForm,UserRoleForm
 
 # Create your views here.
 def sign_up(request):
@@ -40,6 +40,7 @@ def profile(request):
     return render (request, 'users/profile.html',context)
 
 @login_required
+
 def manage_users(request):
     users = ProfileModel.objects.all()
 
@@ -48,3 +49,29 @@ def manage_users(request):
     }
 
     return render(request,'users/list.html',context)
+  
+@login_required
+def manage_users(request):
+    users = ProfileModel.objects.all()
+
+    if request.method == 'POST':
+        form = UserRoleForm(request.POST)
+        if form.is_valid():
+            # Process the form data and update user roles
+            for user in users:
+                user.role = form.cleaned_data['user_role']
+                user.save()
+            # Redirect to the same page or another page as needed
+            return redirect('manage-users')
+    else:
+        # Initialize the form with the current user roles
+        initial_values = {'user_role': [(user.role, user.role) for user in users]}
+        form = UserRoleForm(initial=initial_values)
+        print(initial_values)
+
+    context = {
+        'users': users,
+        'form': form,
+    }
+
+    return render(request, 'users/list.html', context)

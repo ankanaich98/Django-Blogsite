@@ -2,6 +2,7 @@ from typing import Any
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import ProfileModel
+from .enums import UserRoles
 from django import forms
 
 class SignUpForm(UserCreationForm):
@@ -33,3 +34,7 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = ProfileModel
         fields = ['image']
+
+class UserRoleForm(forms.Form):
+    role_choices = [(role.name, role.name) for role in UserRoles]
+    user_role = forms.TypedChoiceField(choices=role_choices, label='User Role', coerce=str)
