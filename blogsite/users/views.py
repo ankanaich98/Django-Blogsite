@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth.decorators import login_required
+from .models import ProfileModel
 from .forms import SignUpForm,UserUpdateForm,ProfileUpdateForm
 
 # Create your views here.
@@ -37,3 +38,13 @@ def profile(request):
     }
 
     return render (request, 'users/profile.html',context)
+
+@login_required
+def manage_users(request):
+    users = ProfileModel.objects.all()
+
+    context = {
+        'users': users,
+    }
+
+    return render(request,'users/list.html',context)
