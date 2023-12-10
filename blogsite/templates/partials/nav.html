@@ -24,6 +24,9 @@
         <li class="nav-item active">
           <a class="nav-link text-white" href="{% url 'new-post'%}">New Post<span class="sr-only">(current)</span></a>
         </li>
+        <li class="nav-item active">
+          <a class="nav-link text-white" href="{% url 'my-posts'%}">My Posts<span class="sr-only">(current)</span></a>
+        </li>
         {% if request.user.profilemodel.role == 'ADMIN' %}
         {{request.user.profilemodel.role.name }}
         <li class="nav-item active">

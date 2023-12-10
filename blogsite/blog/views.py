@@ -66,6 +66,17 @@ def newPost(request):
 
     return render(request, 'blog/new_post.html', context)
 
+@login_required
+def my_posts(request):
+ # Retrieve posts associated with the logged-in user
+    posts = PostModel.objects.filter(author=request.user)
+
+    context = {
+        'posts': posts,
+    }
+
+    return render(request, 'blog/user_posts.html', context)
+
 
 
 

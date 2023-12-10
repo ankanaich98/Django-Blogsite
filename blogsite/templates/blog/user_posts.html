@@ -1,0 +1,48 @@
+{% extends 'partials/base.html' %}
+{% block title %}Home Page{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <div class="row mt-5 pt-3 justify-content-center">
+        <div class="col-md-8">
+            {% for post in posts %}
+            <div class="card shadow my-2">
+                <div class="card-body">     
+                    <div class="col-md-12">
+                        <div class="col-md-10 ">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <img class="img-thumbnail" src="{{ post.author.profilemodel.image.url }}" alt="img">
+                                </div>
+                                <div class="col-md-4">
+                                    <small>{{post.date_created}} </small>
+                                    <strong>Author: </strong> <small> {{post.author}}</small>
+                                    {% if post.is_approved %}
+                                    <p><strong>Status: </strong> <small>Posted </small></p>
+                                    {% else %}
+                                    <p><strong>Status: </strong> <small>Pending </small></p>
+                                    {% endif %}
+                                
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-12">
+                            <hr>
+                            <div class="col-md-12 px-0">
+                                <img class="img-thumbnail" src="{{ post.image.url }}" alt="post_img">
+                            </div>
+                            <a class="h3" href="{% url 'blog-post-detail' post.id %}">{{post.title}}</a>
+                            <p class="text-justify my-3">
+                                {{post.content}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
