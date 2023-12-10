@@ -1,5 +1,5 @@
 {% extends 'partials/base.html' %}
-{% block title %}Home Page{% endblock %}
+{% block title %}Users List Page{% endblock %}
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="container">
@@ -17,11 +17,12 @@
                                     <p>Email: {{ user.user.email }}</p>
                                     <p>User Role: {{ user.role }}</p>
                                     <form method="post" action="{% url 'manage-users' %}">
-                                        {% csrf_token %}
+                                        <!-- {% csrf_token %}
                                         {{ form.as_p }}
                                     
                                         <button type="submit">Save Roles</button>
-                                      </form>
+                                      </form> -->
+                                      <a class="h3" href="{% url 'user-detail' user.id %}">View Details</a>
                                 </div>
                             </div>
                         </div>

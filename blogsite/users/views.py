@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.forms import UserCreationForm 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from .models import ProfileModel
 from .forms import SignUpForm,UserUpdateForm,ProfileUpdateForm,UserRoleForm
 
@@ -40,17 +40,40 @@ def profile(request):
     return render (request, 'users/profile.html',context)
 
 @login_required
-
-def manage_users(request):
-    users = ProfileModel.objects.all()
-
+@user_passes_test(lambda user: user.is_authenticated and user.profilemodel.role == 'ADMIN')
+def user_detail(request, pk):
+    user = ProfileModel.objects.get(id=pk)
+    if request.method == 'POST':
+        u_form = UserRoleForm(request.POST)
+        if u_form.is_valid():
+            user.role = u_form.cleaned_data['user_role']
+            user.save()
+            return redirect('user-detail', pk=user.id)
+    else:
+        u_form = UserRoleForm()
     context = {
-        'users': users,
+        'user': user,
+        'u_form': u_form,
     }
 
-    return render(request,'users/list.html',context)
+    return render(request, 'users/user_detail.html', context)
+
+
+
+# @login_required
+
+# def manage_users(request):
+#     users = ProfileModel.objects.all()
+
+#     context = {
+#         'users': users,
+#     }
+
+#     return render(request,'users/list.html',context)
+
   
 @login_required
+@user_passes_test(lambda user: user.is_authenticated and user.profilemodel.role == 'ADMIN')
 def manage_users(request):
     users = ProfileModel.objects.all()
 
@@ -65,9 +88,7 @@ def manage_users(request):
             return redirect('manage-users')
     else:
         # Initialize the form with the current user roles
-        initial_values = {'user_role': [(user.role, user.role) for user in users]}
-        form = UserRoleForm(initial=initial_values)
-        print(initial_values)
+        form = UserRoleForm()
 
     context = {
         'users': users,
