@@ -142,6 +142,7 @@ def post_edit(request,pk):
     if request.method == 'POST':
         form = PostUpdateForm(request.POST, instance=post)
         if form.is_valid():
+            messages.success(request,'Post edit successful.')
             form.save()
             return redirect('blog-post-detail', pk =post.id)
     else:
