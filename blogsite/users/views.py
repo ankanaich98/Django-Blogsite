@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required,user_passes_test
 from .models import ProfileModel
 from .forms import SignUpForm,UserUpdateForm,ProfileUpdateForm,UserRoleForm
+from django.contrib import messages
 
 # Create your views here.
 def sign_up(request):
@@ -11,6 +12,7 @@ def sign_up(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Sign Up Successful.')
             return redirect('users-login')
     else:
         form = SignUpForm

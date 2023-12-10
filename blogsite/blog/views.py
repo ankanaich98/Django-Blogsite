@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from .models import PostModel
 from .forms import PostModelForm,PostUpdateForm,CommentForm,PostApproveForm
 from django.contrib.auth.decorators import login_required,user_passes_test
+from django.contrib import messages
 
 # Create your views here.
 # Creating a new post is here
@@ -57,6 +58,7 @@ def newPost(request):
             instance = form.save(commit=False)
             instance.author = request.user
             instance.save()
+            messages.success(request, 'Your post is awaiting approval.')
             return redirect('blog-index')
     else:
         form = PostModelForm()
