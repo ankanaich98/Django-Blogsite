@@ -29,16 +29,25 @@
               </div>
 
             <div class="col-md-12 pt-2">
-              
+              <h4>{{ post.title }}</h4>
                
                 <img class="img-thumbnail" src="{{ post.image.url }}" alt="post_img">
                 
 
 
-                <h4>{{ post.title }}</h4>
+                
                 <p>
                     {{ post.content }}
                 </p>
+                {{ formset.management_form }}
+            {% for form in formset %}
+
+            <img class="img-thumbnail" src="{{ form.instance.image.url }}" alt="Post Section Image">
+            <p>
+              {{form.instance.content}}
+            </p>
+            
+            {% endfor %}
             </div>
         </div>
         <p class="mt-3">

@@ -1,5 +1,7 @@
 from django import forms
-from .models import PostModel, Comment
+from .models import PostModel, Comment,PostSection
+from django.forms import formset_factory
+
 
 
 class PostModelForm(forms.ModelForm):
@@ -7,6 +9,12 @@ class PostModelForm(forms.ModelForm):
     class Meta:
         model = PostModel
         fields = ('title', 'content','image')
+
+class PostSectionForm(forms.ModelForm):
+    content = forms.CharField(widget=forms.Textarea(attrs={'rows':7}))
+    class Meta:
+        model = PostSection
+        fields = ( 'content','image')
 
 class PostUpdateForm(forms.ModelForm):
     class Meta:

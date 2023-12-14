@@ -23,6 +23,17 @@ class PostModel(models.Model):
     def __str__(self) -> str:
         return self.title
 
+class PostSection(models.Model):
+    content = models.TextField()
+    image = models.ImageField(default='default_post.png', upload_to='post_pictures', validators=[FileExtensionValidator(['png','jpg'])])
+    post_model = models.ForeignKey(
+        PostModel,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return f"Section {self.pk}"
+
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(PostModel, on_delete=models.CASCADE)

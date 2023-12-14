@@ -7,9 +7,23 @@
         <div class="col-md-8">
 <div class="card my-3 shadow" >
     <div class="card-body">
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" id="form-container" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}
+            <!-- {{ s_form|crispy }} -->
+        
+            {{ formset.management_form }}
+            {% for form in formset %}
+            <div class="section-form">
+                {{form |crispy}}
+                </div>
+            {% endfor %}
+            
+
+            <!-- {% for s_form in s_form  %}
+                {{ formset_form }}
+            {% endfor %} -->
+            <button id="add-form" type="button">Add Another Section</button>
             <input class="btn btn-primary btn-block" type="submit" value="Post">
         </form>
     </div>
@@ -17,4 +31,38 @@
     </div>
     </div>
 </div>
+<script>
+    let sectionForm = document.querySelectorAll(".section-form")
+    let container = document.querySelector("#form-container")
+    let addButton = document.querySelector("#add-form")
+    let totalForms = document.querySelector("#id_postsection_set-TOTAL_FORMS")
+    
+
+    let formNum = sectionForm.length-1
+    addButton.addEventListener('click', addForm)
+
+    
+    function addForm(e){
+        e.preventDefault()
+        
+        let newForm = sectionForm[0].cloneNode(true)
+        let contentRegex = RegExp(`postsection_set-(\\d+)-content`, 'g');
+        let imageRegex = RegExp(`postsection_set-(\\d+)-image`, 'g');
+        let idRegex = RegExp(`postsection_set-(\\d+)-id`, 'g');
+        let deleteRegex = RegExp(`postsection_set-(\\d+)-DELETE`, 'g');
+        let postModelRegex = RegExp(`postsection_set-(\\d+)-post_model`, 'g');
+        formNum++
+        newForm.innerHTML = newForm.innerHTML.replace(contentRegex, `postsection_set-${formNum}-content`)
+                                              .replace(imageRegex, `postsection_set-${formNum}-image`)
+                                              .replace(idRegex, `postsection_set-${formNum}-id`)
+                                              .replace(deleteRegex, `postsection_set-${formNum}-DELETE`)
+                                              .replace(postModelRegex, `postsection_set-${formNum}-post_model`);
+        // alert(newForm.innerHTML
+        container.insertBefore(newForm, addButton)
+
+        
+        totalForms.setAttribute('value', `${formNum+1}`)
+        // console.log(totalForms)
+    }
+</script>
 {% endblock %}
