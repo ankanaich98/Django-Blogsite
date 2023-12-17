@@ -56,7 +56,7 @@ def newPost(request):
     # post = PostModel.objects.get(pk=post_id)
     template_name = 'blog/new_post.html'
 
-    SectionFormSet= inlineformset_factory(PostModel,PostSection,fields = ('content','image',),extra=1)
+    SectionFormSet= inlineformset_factory(PostModel,PostSection,fields = ('content','image',),extra=1,can_delete=False)
 
     if request.method == 'POST':
         form = PostModelForm(request.POST,request.FILES)
@@ -76,11 +76,13 @@ def newPost(request):
             #     # print(formset)
             #     instance.save()
             formset.save()
+            messages.success(request, 'Your post is awaiting approval.')
             return redirect('blog-index')
         elif form.is_valid():
             post_instance = form.save(commit=False)
             post_instance.author = request.user
             post_instance.save()
+            messages.success(request, 'Your post is awaiting approval.')
             return redirect('blog-index')
     form = PostModelForm()
     formset = SectionFormSet(instance=None)
@@ -139,7 +141,7 @@ def my_posts(request):
 @user_passes_test(lambda user: user.is_authenticated and user.profilemodel.role == 'ADMIN')
 def approve_post_detail(request,pk):
     post = PostModel.objects.get(id=pk)
-    PostSectionFormSet = inlineformset_factory(PostModel, PostSection, fields=('content', 'image',), extra=0)
+    PostSectionFormSet = inlineformset_factory(PostModel, PostSection, fields=('content', 'image',), extra=0,can_delete=False)
     formset = PostSectionFormSet(instance=post)
     if request.method == 'POST':
         form = PostApproveForm(request.POST, instance=post)
@@ -174,7 +176,7 @@ def approve_post_detail(request,pk):
 @login_required
 def post_detail(request,pk):
     post = PostModel.objects.get(id=pk)
-    PostSectionFormSet = inlineformset_factory(PostModel, PostSection, fields=('content', 'image',), extra=0)
+    PostSectionFormSet = inlineformset_factory(PostModel, PostSection, fields=('content', 'image',), extra=0,can_delete=False)
     formset = PostSectionFormSet(instance=post)
 
     if request.method == 'POST':
@@ -199,17 +201,30 @@ def post_detail(request,pk):
 @login_required
 def post_edit(request,pk):
     post = PostModel.objects.get(id=pk) 
+    PostSectionFormSet = inlineformset_factory(PostModel, PostSection, fields=('content', 'image',), extra=0,can_delete=False)
+    
     if request.method == 'POST':
+        formset = PostSectionFormSet(request.POST,instance=post)
+       
         form = PostUpdateForm(request.POST, instance=post)
-        if form.is_valid():
+        if form.is_valid() and formset.is_valid() :
             messages.success(request,'Post edit successful.')
             form.save()
-            return redirect('blog-post-detail', pk =post.id)
+            formset.save()
+            
+            return redirect('blog-post-detail', pk =post.id)   
+        # else:
+        #     print(formset.errors)
+        #     messages.success(request,'Post edit not done.')  
+        #     return redirect('blog-post-detail', pk =post.id)   
     else:
+        
         form = PostUpdateForm(instance=post)
+        formset = PostSectionFormSet(instance=post)
     context = {
         'post':post,
         'form':form,
+        'formset':formset
     }
     return render(request, 'blog/post_edit.html',context)
 

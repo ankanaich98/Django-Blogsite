@@ -7,9 +7,28 @@
         <div class="col-md-8 offset-md-2">
 <div class="card my-3 shadow" >
     <div class="card-body">
-       <form method="POST">
+        <!-- {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show col-md-12" role="alert">
+            {% for message in messages %}
+            {{ message }}
+             {% endfor %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+        {% endif %} -->
+       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form|crispy }}
+        <img class="img-thumbnail" src="{{ post.image.url }}" alt="post_img">
+
+        {{ formset.management_form }}
+            {% for form in formset %}
+            <div class="section-form">
+                {{form |crispy}}
+                <img class="img-thumbnail" src="{{ form.instance.image.url }}" alt="post_img">
+                </div>
+            {% endfor %}
         <input class="btn btn-primary btn-sm" type="submit" value="Save">
        </form>
     </div>

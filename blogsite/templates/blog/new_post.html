@@ -14,7 +14,7 @@
         
             {{ formset.management_form }}
             {% for form in formset %}
-            <div class="section-form">
+            <div class="section-form" hidden>
                 {{form |crispy}}
                 </div>
             {% endfor %}
@@ -24,6 +24,7 @@
                 {{ formset_form }}
             {% endfor %} -->
             <button id="add-form" type="button">Add Another Section</button>
+            <button id="remove-form" type="button" hidden>Remove Last Section</button>
             <input class="btn btn-primary btn-block" type="submit" value="Post">
         </form>
     </div>
@@ -36,13 +37,17 @@
     let container = document.querySelector("#form-container")
     let addButton = document.querySelector("#add-form")
     let totalForms = document.querySelector("#id_postsection_set-TOTAL_FORMS")
+
+    let removeButton = document.querySelector("#remove-form")
     
 
     let formNum = sectionForm.length-1
     addButton.addEventListener('click', addForm)
+    removeButton.addEventListener('click', removeForm)
 
     
     function addForm(e){
+        if(!document.querySelector(".section-form").hasAttribute('hidden')){
         e.preventDefault()
         
         let newForm = sectionForm[0].cloneNode(true)
@@ -59,10 +64,50 @@
                                               .replace(postModelRegex, `postsection_set-${formNum}-post_model`);
         // alert(newForm.innerHTML
         container.insertBefore(newForm, addButton)
-
+        
         
         totalForms.setAttribute('value', `${formNum+1}`)
-        // console.log(totalForms)
+        // console.log(totalForms.getAttribute('value'))
+        }
+        else{
+        sectionForm.forEach(form => {
+            form.removeAttribute('hidden');
+            document.querySelector("#remove-form").removeAttribute('hidden')
+        });
+
     }
+    }
+    function removeForm(e) {
+        // console.log(formNum)
+        if (formNum > 0) {
+            // let lastForm = sectionForm[formNum];
+            // console.log(lastForm)
+            
+            // console.log(totalForms)
+            document.querySelectorAll(".section-form")[formNum].remove(); 
+            
+
+            totalForms.setAttribute('value', `${formNum}`);
+            formNum--;
+            
+            // console.log(formNum+1)
+        }
+        else if (formNum==0){
+            // console.log('Hide')
+            // console.log(totalForms)
+            sectionForm.forEach(form => {
+                // console.log(form)
+            form.setAttribute('hidden','true');
+        });
+        let textarea = document.querySelectorAll(".section-form textarea")[formNum];
+        textarea.value = '';
+        let imageField = document.querySelectorAll(".section-form input[type='file']")[formNum];
+        imageField.value = '';
+        // console.log(document.querySelectorAll(".section-form")[formNum].getElementsByTagName('textarea').value = '')
+        // document.querySelectorAll(".section-form")[formNum].getElementsByTagName('textarea').innerHTML = ''
+        document.querySelector("#remove-form").setAttribute('hidden','true')
+        }
+    }
+    
 </script>
 {% endblock %}
