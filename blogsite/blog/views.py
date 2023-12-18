@@ -204,9 +204,9 @@ def post_edit(request,pk):
     PostSectionFormSet = inlineformset_factory(PostModel, PostSection, fields=('content', 'image',), extra=0,can_delete=False)
     
     if request.method == 'POST':
-        formset = PostSectionFormSet(request.POST,instance=post)
+        formset = PostSectionFormSet(request.POST,request.FILES or None,instance=post)
        
-        form = PostUpdateForm(request.POST, instance=post)
+        form = PostUpdateForm(request.POST,request.FILES or None, instance=post)
         if form.is_valid() and formset.is_valid() :
             messages.success(request,'Post edit successful.')
             form.save()
