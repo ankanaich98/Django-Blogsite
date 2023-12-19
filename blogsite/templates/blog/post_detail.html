@@ -34,7 +34,7 @@
                     
                 </span>
                 {% endif %}
-                {% if post.author == request.user %}
+                {% if post.author == request.user and  post.is_approved %}
                 <span>
                     <a class="btn btn-danger float-right btn-sm" href="{% url 'blog-post-delete' post.id %}">Delete</a>
                 </span>
