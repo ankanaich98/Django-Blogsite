@@ -2,6 +2,13 @@
 {% block title %}Post Edit Page{% endblock %}
 {% load crispy_forms_tags %}
 {% block content %}
+<style>
+    .section-form.hidden {
+        display: none;
+    }
+</style>
+
+
 <div class="container">
     <div class="row mt-5 pt-3">
         <div class="col-md-8 offset-md-2">
@@ -17,23 +24,97 @@
         </button>
     </div>
         {% endif %} -->
-       <form method="POST" enctype="multipart/form-data">
+       <form method="POST" id="form-container" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form|crispy }}
         <img class="img-thumbnail" src="{{ post.image.url }}" alt="post_img">
 
         {{ formset.management_form }}
             {% for form in formset %}
-            <div class="section-form">
+            <div class="section-form " >
                 {{form |crispy}}
                 <img class="img-thumbnail" src="{{ form.instance.image.url }}" alt="post_img">
                 </div>
             {% endfor %}
-        <input class="btn btn-primary btn-sm" type="submit" value="Save">
+
+        <input class="btn btn-primary btn-sm" id="save-btn" type="submit" value="Save">
+        <button id="add-form" type="button">Add Another Section</button>
+        <button id="remove-form" type="button">Remove Last Section</button>
        </form>
     </div>
 </div>
     </div>
     </div>
 </div>
+<script>
+    let sectionForm = document.querySelectorAll(".section-form")
+    let container = document.querySelector("#form-container")
+    let saveButton = document.querySelector("#save-btn")
+    let addButton = document.querySelector("#add-form")
+    let totalForms = document.querySelector("#id_postsection_set-TOTAL_FORMS")
+
+    let removeButton = document.querySelector("#remove-form")
+    
+
+    let formNum = sectionForm.length-1
+    addButton.addEventListener('click', addForm)
+    removeButton.addEventListener('click', removeForm)
+    
+
+    
+    function addForm(e){
+       
+
+        document.querySelector("#remove-form").removeAttribute('hidden')
+        let replaceIndex = totalForms.value
+        let htmlString = `
+
+    <div id="div_id_postsection_set-`+replaceIndex+`-content" class="form-group">
+        <label for="id_postsection_set-`+replaceIndex+`-content" class="requiredField">Content<span class="asteriskField">*</span></label>
+        <div>
+            <textarea name="postsection_set-`+replaceIndex+`-content" cols="40" rows="10" class="textarea form-control" id="id_postsection_set-`+replaceIndex+`-content"></textarea>
+        </div>
+    </div>
+    <div id="div_id_postsection_set-`+replaceIndex+`-image" class="form-group">
+        <label for="id_postsection_set-`+replaceIndex+`-image" class="requiredField">Image<span class="asteriskField">*</span></label>
+        <div>
+            Currently: <a href="/media/default_post.png"></a><br>
+            Change:
+            <input type="file" name="postsection_set-`+replaceIndex+`-image" accept="image/*" class="clearablefileinput form-control-file" id="id_postsection_set-`+replaceIndex+`-image">
+        </div>
+    </div>
+    <input type="hidden" name="postsection_set-`+replaceIndex+`-id" value="" id="id_postsection_set-`+replaceIndex+`-id">
+    <div class="form-group"> <div id="div_id_postsection_set-`+replaceIndex+`-DELETE" class="form-check"> <input type="checkbox" name="postsection_set-`+replaceIndex+`-DELETE" class="checkboxinput form-check-input" id="id_postsection_set-`+replaceIndex+`-DELETE"> <label for="id_postsection_set-`+replaceIndex+`-DELETE" class="form-check-label">
+                    Delete
+                </label> </div> </div>
+    <input type="hidden" name="postsection_set-`+replaceIndex+`-post_model" value="" id="id_postsection_set-`+replaceIndex+`-post_model">
+    <img class="img-thumbnail" src="/media/default_post.png" alt="post_img">
+`;
+
+        let tempContainer = document.createElement('div'); 
+        tempContainer.classList.add('section-form')
+        tempContainer.innerHTML = htmlString;
+        e.preventDefault()
+        formNum++
+        container.insertBefore(tempContainer, saveButton)
+        totalForms.setAttribute('value', `${formNum+1}`)
+
+
+       
+    }
+    function removeForm(e) {
+            if(totalForms.value==1){
+                document.querySelectorAll(".section-form")[formNum].remove(); 
+                totalForms.setAttribute('value', `${formNum}`);
+                formNum--;
+                document.querySelector("#remove-form").setAttribute('hidden','true')
+            }
+            else{
+            document.querySelectorAll(".section-form")[formNum].remove(); 
+            totalForms.setAttribute('value', `${formNum}`);
+            formNum--;}
+        console.log(totalForms)
+    }
+    
+</script>
 {% endblock %}

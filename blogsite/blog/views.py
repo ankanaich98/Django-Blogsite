@@ -201,7 +201,7 @@ def post_detail(request,pk):
 @login_required
 def post_edit(request,pk):
     post = PostModel.objects.get(id=pk) 
-    PostSectionFormSet = inlineformset_factory(PostModel, PostSection, fields=('content', 'image',), extra=0,can_delete=False)
+    PostSectionFormSet = inlineformset_factory(PostModel, PostSection, fields=('content', 'image',), extra=0,can_delete=True)
     
     if request.method == 'POST':
         formset = PostSectionFormSet(request.POST,request.FILES or None,instance=post)
@@ -210,6 +210,9 @@ def post_edit(request,pk):
         if form.is_valid() and formset.is_valid() :
             messages.success(request,'Post edit successful.')
             form.save()
+
+            # for forms in formset:
+            #     forms.instance.DELETE = True
             formset.save()
             
             return redirect('blog-post-detail', pk =post.id)   

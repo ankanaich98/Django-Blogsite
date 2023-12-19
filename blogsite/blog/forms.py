@@ -15,7 +15,7 @@ class PostSectionForm(forms.ModelForm):
     class Meta:
         model = PostSection
         fields = ( 'content','image')
-        exclude = ['DELETE']
+        
 
 class PostUpdateForm(forms.ModelForm):
     class Meta:
