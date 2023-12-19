@@ -27,11 +27,16 @@
                 
                 <small>{{ post.date_created }}</small>
                 
-                {% if post.author == request.user%}
+                {% if post.author == request.user and not post.is_approved  %}
                 <span>
                     <a class="btn btn-danger float-right btn-sm" href="{% url 'blog-post-delete' post.id %}">Delete</a>
                     <a class="btn btn-primary float-right mx-2 btn-sm" href="{% url 'blog-post-edit' post.id %}">Edit</a>
                     
+                </span>
+                {% endif %}
+                {% if post.author == request.user %}
+                <span>
+                    <a class="btn btn-danger float-right btn-sm" href="{% url 'blog-post-delete' post.id %}">Delete</a>
                 </span>
                 {% endif %}
                 <hr style="margin-bottom: 10px;">
