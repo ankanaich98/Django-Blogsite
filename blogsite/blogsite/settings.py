@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'blogsite.urls'
@@ -104,6 +105,19 @@ EMAIL_USE_TLS = True
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
+
+# settings.py
+
+# Set session cookie age to, for example, 30 minutes (1800 seconds)
+SESSION_COOKIE_AGE = 1800
+
+# Update session expiration with every request
+SESSION_SAVE_EVERY_REQUEST = True
+
+# Optional: Set session cookie secure and httponly flags
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+
 
 DATABASES = {
     # 'default': {
