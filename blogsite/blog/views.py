@@ -203,7 +203,7 @@ def post_edit(request,pk):
     post = PostModel.objects.get(id=pk) 
     PostSectionFormSet = inlineformset_factory(PostModel, PostSection, fields=('content', 'image',), extra=0,can_delete=True)
     if request.user != post.author:
-        messages.error(request, "You don't have permission to edit this post.")
+        messages.error(request, "You don't have permission to edit this post.",extra_tags='error')
         return redirect('blog-post-detail', pk=post.id)
 
 
@@ -212,7 +212,7 @@ def post_edit(request,pk):
        
         form = PostUpdateForm(request.POST,request.FILES or None, instance=post)
         if form.is_valid() and formset.is_valid() :
-            messages.success(request,'Post edit successful.')
+            messages.success(request,'Post edit successful.',extra_tags='success')
             form.save()
 
             # for forms in formset:
