@@ -4,8 +4,21 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from .models import ProfileModel
 from .forms import SignUpForm,UserUpdateForm,ProfileUpdateForm,UserRoleForm
 from django.contrib import messages
+from django.contrib.auth.views import LoginView
 
 # Create your views here.
+
+class CustomLoginView(LoginView):
+    
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            # Redirect authenticated users to the dashboard
+            return redirect('blog-index')
+        return super().dispatch(request, *args, **kwargs)
+
+
+
+
 def sign_up(request):
     form = SignUpForm()
     if request.method == 'POST':
