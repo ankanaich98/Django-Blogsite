@@ -17,6 +17,11 @@ class SignUpForm(UserCreationForm):
 
         for fieldname in ['username','email','password1','password2']:
             self.fields[fieldname].help_text = None
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('This email address is already in use.')
+        return email
 
 class UserUpdateForm(forms.ModelForm):
     class Meta:
