@@ -32,7 +32,9 @@
         {% endfor %}
       </div>
       {% endif %} -->
+     
       {% if messages %}
+      {% if 'success' in message.tags %}
       <div class="alert alert-success alert-dismissible fade show col-md-12" role="alert">
         {% for message in messages %}
         {{ message }}
@@ -41,7 +43,18 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      {% else %}
+      <div class="alert alert-danger alert-dismissible fade show col-md-12" role="alert">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       {% endif %}
+      {% endif %}
+      
 
         <div class="col-md-12">
             <div class="col-md-12 row">
