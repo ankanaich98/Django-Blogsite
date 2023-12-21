@@ -206,6 +206,9 @@ def post_edit(request,pk):
         messages.error(request, "You don't have permission to edit this post.",extra_tags='error')
         return redirect('blog-post-detail', pk=post.id)
 
+    if request.user == post.author and post.is_approved == True:
+        messages.error(request, "You don't have permission to edit this post.",extra_tags='error')
+        return redirect('blog-post-detail', pk=post.id)
 
     if request.method == 'POST':
         formset = PostSectionFormSet(request.POST,request.FILES or None,instance=post)
