@@ -28,4 +28,7 @@ jobs:
     - name: Run Tests
       run: |
         python blogsite/manage.py test
+    - name: Run Server
+      run: |
+        python blogsite/manage.py runserver
       
